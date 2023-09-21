@@ -100,6 +100,7 @@ class CustomUserViewSet(UserViewSet):
             status=status.HTTP_204_NO_CONTENT
         )
 
+
 class CustomTokenCreateView(TokenCreateView):
     """Кастомный вьюсет создания токена."""
 
@@ -118,4 +119,3 @@ class CustomTokenDestroyView(TokenDestroyView):
             {DESTROY_TOKEN_SUCCESS},
             status=status.HTTP_204_NO_CONTENT
         )
-
