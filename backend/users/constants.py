@@ -1,0 +1,12 @@
+EMAIL_MAX_LENGTH = 254
+USERNAME_MAX_LENGTH = 150
+FIRST_NAME_MAX_LENGTH = 150
+LAST_NAME_MAX_LENGTH = 150
+USER_TEMPLATE = '{} {}'
+SUBSCRIBE_TEMPLATE = 'Пользователь {} подписан на автора {}.'
+SUBSCRIBE_ERROR = 'Нельзя подписаться на самого себя.'
+ALREADY_IS_SUBSCRIBE = 'Вы уже подписаны на автора {}.'
+SUBSCRIBE_NOT_EXIST = 'Вы не подписаны на автора {}.'
+UNSUBSCRIBE_SUCCESS = 'Вы отписались от автора {}.'
+PASSWORD_CHANGE_SUCCESS = 'Пароль успешно изменен.'
+DESTROY_TOKEN_SUCCESS = 'Токен успешно удален.'
