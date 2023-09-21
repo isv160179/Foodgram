@@ -1,5 +1,4 @@
 from django.urls import path, include
-from djoser.views import UserViewSet
 from rest_framework.routers import DefaultRouter
 
 from users.views import CustomTokenCreateView, CustomTokenDestroyView, \

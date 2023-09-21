@@ -65,7 +65,6 @@ class User(AbstractUser):
 
 
 class Subscribe(models.Model):
-
     user = models.ForeignKey(
         User,
         verbose_name='Подписчик',
