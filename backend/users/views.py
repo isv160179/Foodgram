@@ -22,6 +22,11 @@ class CustomUserViewSet(UserViewSet):
     pagination_class = CustomPagination
     lookup_url_kwarg = 'user_id'
 
+    def get_permissions(self):
+        if self.action == 'me':
+            self.permission_classes = (IsAuthenticated,)
+        return super().get_permissions()
+
     def get_subscribe_serializer(self, *args, **kwargs):
         kwargs.setdefault('context', self.get_serializer_context())
         return SubscribeSerializer(*args, **kwargs)

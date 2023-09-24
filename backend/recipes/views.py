@@ -1,15 +1,108 @@
-from recipes.mixins import RetriveListModelMixin
-from recipes.models import Tag, Ingredient
-from recipes.serializers import TagSerializer, IngredientSerializer
+from django.db.models import Sum
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import viewsets, status
+from rest_framework.decorators import action
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+
+from foodgram.pagination import CustomPagination
+from recipes.constants import (
+    RECIPE_NOT_EXIST,
+    SHOPING_CART_TEMPLATE,
+    SHOPING_CART_FILE_NAME,
+    SHOPING_CART
+)
+from recipes.filters import IngredientFilter, RecipeFilter
+from recipes.models import Tag, Ingredient, Recipe, RecipeIngredient
+from recipes.permissions import IsAdminOrAuthorOrReadOnly
+from recipes.serializers import TagSerializer, IngredientSerializer, \
+    RecipeWriteSerializer, FavoriteSerializer, ShoppingCartSerializer
 
 
-class TagViewSet(RetriveListModelMixin):
-    serializer_class = TagSerializer
+class TagViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Tag.objects.all()
-    http_method_names = ('get',)
+    serializer_class = TagSerializer
+    permission_classes = (AllowAny,)
 
 
-class IngredientViewSet(RetriveListModelMixin):
-    serializer_class = IngredientSerializer
+class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all()
-    http_method_names = ('get',)
+    serializer_class = IngredientSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = IngredientFilter
+    permission_classes = (AllowAny,)
+
+
+class RecipeViewSet(viewsets.ModelViewSet):
+    queryset = Recipe.objects.all()
+    serializer_class = RecipeWriteSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = RecipeFilter
+    permission_classes = (IsAdminOrAuthorOrReadOnly,)
+    pagination_class = CustomPagination
+
+    def methods_for_actions(self, pk, serializer_class):
+        user = self.request.user
+        obj = serializer_class.Meta.model.objects.filter(
+            user=user,
+            recipe=get_object_or_404(Recipe, pk=pk)
+        )
+
+        if self.request.method == 'POST':
+            serializer = serializer_class(
+                data={'user': user.id, 'recipe': pk},
+                context={'request': self.request}
+            )
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        if self.request.method == 'DELETE':
+            try:
+                obj.delete()
+                return Response(status=status.HTTP_204_NO_CONTENT)
+            except obj.DoesNotExist:
+                Response({'errors': RECIPE_NOT_EXIST},
+                         status=status.HTTP_400_BAD_REQUEST)
+
+    @action(
+        methods=['POST', 'DELETE'],
+        detail=True
+    )
+    def favorite(self, request, pk):
+        return self.methods_for_actions(pk, FavoriteSerializer)
+
+    @action(
+        methods=['POST', 'DELETE'],
+        detail=True
+    )
+    def shopping_cart(self, request, pk):
+        return self.methods_for_actions(pk, ShoppingCartSerializer)
+
+    @action(
+        methods=['GET', ],
+        detail=False
+    )
+    def download_shopping_cart(self, request):
+        ingredient_list = (
+            RecipeIngredient.objects.filter(
+                recipe__shopping_cart__user=request.user
+            )
+            .values('ingredient__name', 'ingredient__measurement_unit')
+            .order_by('ingredient__name')
+            .annotate(total_summ=Sum('amount'))
+        )
+        result = SHOPING_CART_TEMPLATE.format(request.user) + '\n'
+        result += '\n'.join(SHOPING_CART.format(
+            ingredient['ingredient__name'],
+            ingredient['total_summ'],
+            ingredient['ingredient__measurement_unit']
+        ) for ingredient in ingredient_list)
+
+        response = HttpResponse(result, content_type='text/plain')
+        response['Content-Disposition'] = (
+            f'attachment; filename={SHOPING_CART_FILE_NAME}'
+        )
+        return response
