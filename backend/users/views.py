@@ -10,19 +10,27 @@ from foodgram.pagination import CustomPagination
 from users.constants import (
     SUBSCRIBE_ERROR,
     ALREADY_IS_SUBSCRIBE,
-    SUBSCRIBE_NOT_EXIST, UNSUBSCRIBE_SUCCESS, PASSWORD_CHANGE_SUCCESS,
-    DESTROY_TOKEN_SUCCESS
+    SUBSCRIBE_NOT_EXIST,
+    UNSUBSCRIBE_SUCCESS,
+    PASSWORD_CHANGE_SUCCESS,
+    DESTROY_TOKEN_SUCCESS,
+    USER_IS_BLOCKED
 )
 from users.models import Subscribe, User
 from users.serializers import SubscribeSerializer
 
 
 class CustomUserViewSet(UserViewSet):
-    """Кастомный вьюсет пользователя для работы с подписками."""
+    """
+    Кастомный вьюсет пользователя для работы с подписками.
+    """
     pagination_class = CustomPagination
     lookup_url_kwarg = 'user_id'
 
     def get_permissions(self):
+        """
+        Ограничивает доступ к эндпоинту me неавторизованным пользователям.
+        """
         if self.action == 'me':
             self.permission_classes = (IsAuthenticated,)
         return super().get_permissions()
@@ -32,8 +40,9 @@ class CustomUserViewSet(UserViewSet):
         return SubscribeSerializer(*args, **kwargs)
 
     def create_subscribe(self, request, author):
-        """Метод создания подписки на автора."""
-
+        """
+        Метод создания подписки на автора.
+        """
         if request.user == author:
             return Response(
                 {'errors': SUBSCRIBE_ERROR},
@@ -53,7 +62,9 @@ class CustomUserViewSet(UserViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def delete_subscribe(self, request, author):
-        """Метод удаления подписки."""
+        """
+        Метод удаления подписки.
+        """
         try:
             Subscribe.objects.get(user=request.user, author=author).delete()
         except Subscribe.DoesNotExist:
@@ -72,7 +83,9 @@ class CustomUserViewSet(UserViewSet):
         permission_classes=(IsAuthenticated,)
     )
     def subscriptions(self, request):
-        """Action метод показа всех подписок пользователя."""
+        """
+        Action метод показа всех подписок пользователя.
+        """
         queryset = User.objects.filter(subscribing__user=request.user)
         page = self.paginate_queryset(queryset)
         if page is not None:
@@ -87,7 +100,9 @@ class CustomUserViewSet(UserViewSet):
         permission_classes=(IsAuthenticated,)
     )
     def subscribe(self, request, user_id=None):
-        """Action метод управления подпиской."""
+        """
+        Action метод управления подпиской.
+        """
         author = get_object_or_404(User, pk=user_id)
         if request.method == 'POST':
             return self.create_subscribe(request, author)
@@ -98,7 +113,9 @@ class CustomUserViewSet(UserViewSet):
         detail=False
     )
     def set_password(self, request, *args, **kwargs):
-        """Кастомный Action метод изменения пароля."""
+        """
+        Кастомный Action метод изменения пароля.
+        """
         super().set_password(request, *args, **kwargs)
         return Response(
             {PASSWORD_CHANGE_SUCCESS},
@@ -107,16 +124,25 @@ class CustomUserViewSet(UserViewSet):
 
 
 class CustomTokenCreateView(TokenCreateView):
-    """Кастомный вьюсет создания токена."""
+    """
+    Кастомный вьюсет создания токена.
+    """
 
     def _action(self, serializer):
+        if serializer.user.is_blocked:
+            return Response(
+                {'errors': USER_IS_BLOCKED},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
         return Response(
             data=super()._action(serializer).data,
             status=status.HTTP_201_CREATED)
 
 
 class CustomTokenDestroyView(TokenDestroyView):
-    """Кастомный вьюсет удаления токена."""
+    """
+    Кастомный вьюсет удаления токена.
+    """
 
     def post(self, request):
         super().post(request)

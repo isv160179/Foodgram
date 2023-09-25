@@ -1,6 +1,5 @@
 from django.db.models import Sum
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
@@ -45,10 +44,17 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     def methods_for_actions(self, pk, serializer_class):
         user = self.request.user
-        obj = serializer_class.Meta.model.objects.filter(
-            user=user,
-            recipe=get_object_or_404(Recipe, pk=pk)
-        )
+
+        try:
+            recipe = Recipe.objects.get(pk=pk)
+            obj = serializer_class.Meta.model.objects.filter(
+                user=user,
+                recipe=recipe
+            )
+        except Recipe.DoesNotExist:
+            obj = None
+            Response({'errors': RECIPE_NOT_EXIST},
+                     status=status.HTTP_400_BAD_REQUEST)
 
         if self.request.method == 'POST':
             serializer = serializer_class(
@@ -60,12 +66,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         if self.request.method == 'DELETE':
-            try:
-                obj.delete()
-                return Response(status=status.HTTP_204_NO_CONTENT)
-            except obj.DoesNotExist:
-                Response({'errors': RECIPE_NOT_EXIST},
-                         status=status.HTTP_400_BAD_REQUEST)
+            if obj is None:
+                return Response({'errors': RECIPE_NOT_EXIST},
+                                status=status.HTTP_400_BAD_REQUEST)
+            obj.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(
         methods=['POST', 'DELETE'],
