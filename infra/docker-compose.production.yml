@@ -8,9 +8,7 @@ volumes:
 services:
 
   frontend:
-    build:
-      context: ../frontend
-      dockerfile: Dockerfile
+    image: isv1601/foodgram_frontend
     volumes:
       - ../frontend/:/app/result_build/
     depends_on:
@@ -24,7 +22,7 @@ services:
       - ../.env
 
   backend:
-    build: ../backend/
+    image: isv1601/foodgram_backend
     volumes:
       - static:/backend_static
       - media:/app/media

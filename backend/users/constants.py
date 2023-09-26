@@ -1,3 +1,4 @@
+ALLOWED_SYMBOLS_FOR_LOGIN = r'[\w.@+-]'
 EMAIL_MAX_LENGTH = 254
 USERNAME_MAX_LENGTH = 150
 FIRST_NAME_MAX_LENGTH = 150
@@ -11,3 +12,4 @@ UNSUBSCRIBE_SUCCESS = 'Вы отписались от автора {}.'
 PASSWORD_CHANGE_SUCCESS = 'Пароль успешно изменен.'
 DESTROY_TOKEN_SUCCESS = 'Токен успешно удален.'
 USER_IS_BLOCKED = 'Пользователь заблокирован.'
+SYMBOLS_WRONG = 'Использовать символ(ы): {} в составе логина запрещено!'

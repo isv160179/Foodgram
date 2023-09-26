@@ -1,15 +1,15 @@
 import re
 
-from django.conf import settings
 from django.core.exceptions import ValidationError
 
-SYMBOLS_WRONG = 'Использовать символ(ы): {} в составе логина запрещено!'
+import users.constants
+from users.constants import SYMBOLS_WRONG
 
 
 def username_validator(value):
     """Проверка на использование запрещенных символов."""
     denied_symbols = re.sub(
-        settings.ALLOWED_SYMBOLS_FOR_LOGIN, '', value
+        users.constants.ALLOWED_SYMBOLS_FOR_LOGIN, '', value
     )
     if denied_symbols:
         raise ValidationError(

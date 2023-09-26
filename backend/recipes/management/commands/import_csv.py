@@ -1,30 +1,34 @@
 import csv
+import os
 
+from django.conf import settings
 from django.core.management.base import BaseCommand
 
-from recipes.models import Ingredient
+from recipes.constants import PULL_SUCCSESS
+from recipes.models import Ingredient, Tag
 
 
 class Command(BaseCommand):
-    help = 'Импорт данных из CSV в Базу данных SQLite'
+    help = 'Импорт данных из CSV в Базу данных Postgres'
 
     def handle(self, *args, **kwargs):
-        self.stdout.write("###   НАЧИНАЮ!   ###")
-        if Ingredient.objects.exists():
-            print("Данные уже загружены!")
-            return
-        with open("data/ingredients.csv", "r", encoding="utf-8") as file:
-            reader = csv.reader(file, delimiter=',')
-            header = ['name', 'measurement_unit']
-            try:
-                for row in reader:
-                    object_dict = {
-                        key: value for key, value in zip(header, row)
-                    }
-                    Ingredient.objects.create(**object_dict)
-            except ValueError as error:
-                self.stdout.write("Ошибка :{}.".format(error))
-            except TypeError as error:
-                self.stdout.write("Ошибка :{}.".format(error))
-        self.stdout.write('Данные модели ЗАГРУЖЕНЫ!')
-        self.stdout.write('###  Готово !!!  ###')
+        patch_full = [
+            {'file': 'ingredients.csv', 'obj': Ingredient},
+            {'file': 'tags.csv', 'obj': Tag},
+        ]
+        for parameter in patch_full:
+            patch = os.path.join(settings.BASE_DIR, 'data/', parameter['file'])
+            with open(patch, 'r', encoding='utf-8') as f_csv:
+                reader = csv.reader(f_csv, delimiter=',')
+                header = next(reader)
+                try:
+                    for row in reader:
+                        object_dict = {
+                            key: value for key, value in zip(header, row)
+                        }
+                        parameter['obj'].objects.create(**object_dict)
+                except ValueError as error:
+                    self.stdout.write('Ошибка :{}.'.format(error))
+                except TypeError as error:
+                    self.stdout.write('Ошибка :{}.'.format(error))
+            self.stdout.write(PULL_SUCCSESS.format(parameter['file']))
