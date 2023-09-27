@@ -14,21 +14,11 @@ class CustomUserSerializer(UserSerializer):
     class Meta(UserSerializer.Meta):
         fields = UserSerializer.Meta.fields + ('is_subscribed',)
 
-    # class Meta(UserSerializer.Meta):
-    #     fields = (
-    #         'email',
-    #         'id',
-    #         'username',
-    #         'first_name',
-    #         'last_name',
-    #         'is_subscribed'
-    #     )
-
     def get_is_subscribed(self, obj):
         user = self.context['request'].user
         return (
-                user.is_authenticated
-                and obj.subscribing.filter(user=user).exists()
+            user.is_authenticated
+            and obj.subscribing.filter(user=user).exists()
         )
 
 

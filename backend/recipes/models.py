@@ -1,7 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.core.validators import RegexValidator, MinValueValidator
 from django.db import models
-from django.db.models import UniqueConstraint, Model
 from django.urls import reverse
 
 from recipes.constants import (
@@ -159,7 +158,7 @@ class RecipeIngredient(models.Model):
         verbose_name = 'Рецепт с ингредиентом'
         verbose_name_plural = 'Рецепты с ингредиентами'
         constraints = (
-            UniqueConstraint(
+            models.UniqueConstraint(
                 fields=('ingredient', 'recipe',),
                 name='unique_ingredient',
             ),
@@ -191,7 +190,7 @@ class Favorite(models.Model):
         verbose_name = 'Избранное'
         verbose_name_plural = 'Избранное'
         constraints = (
-            UniqueConstraint(
+            models.UniqueConstraint(
                 fields=('user', 'recipe',),
                 name='unique_favorites',
             ),
@@ -222,7 +221,7 @@ class ShoppingCart(models.Model):
         verbose_name = 'Список покупок'
         verbose_name_plural = 'Списки покупок'
         constraints = (
-            UniqueConstraint(
+            models.UniqueConstraint(
                 fields=('user', 'recipe'),
                 name='unique_recipe_shopping_cart'
             ),
