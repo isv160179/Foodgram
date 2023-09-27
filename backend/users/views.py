@@ -1,21 +1,16 @@
 from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
-from djoser.views import UserViewSet, TokenCreateView, TokenDestroyView
+from djoser.views import TokenCreateView, TokenDestroyView, UserViewSet
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from foodgram.pagination import CustomPagination
-from users.constants import (
-    SUBSCRIBE_ERROR,
-    ALREADY_IS_SUBSCRIBE,
-    SUBSCRIBE_NOT_EXIST,
-    UNSUBSCRIBE_SUCCESS,
-    PASSWORD_CHANGE_SUCCESS,
-    DESTROY_TOKEN_SUCCESS,
-    USER_IS_BLOCKED
-)
+from users.constants import (ALREADY_IS_SUBSCRIBE, DESTROY_TOKEN_SUCCESS,
+                             PASSWORD_CHANGE_SUCCESS, SUBSCRIBE_ERROR,
+                             SUBSCRIBE_NOT_EXIST, UNSUBSCRIBE_SUCCESS,
+                             USER_IS_BLOCKED)
 from users.models import Subscribe, User
 from users.serializers import SubscribeSerializer
 

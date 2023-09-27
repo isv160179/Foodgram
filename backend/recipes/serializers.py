@@ -5,24 +5,13 @@ from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
 from foodgram.serializers import RecipeSerializer
-from recipes.constants import (
-    INGREDIENT_NULL_ERROR,
-    INGREDIENT_UNIQUE_ERROR,
-    COOKING_TIME_MIN,
-    COOKING_ERROR,
-    TAG_NULL_ERROR,
-    TAG_UNIQUE_ERROR,
-    RECIPE_ALREADY_EXIST, FIELD_IS_NONE_ERROR
-)
-from recipes.models import (
-    Tag,
-    Ingredient,
-    RecipeIngredient,
-    Recipe,
-    Favorite,
-    ShoppingCart
-)
-from recipes.validators import null_unique_validator, not_exists_validate
+from recipes.constants import (COOKING_ERROR, COOKING_TIME_MIN,
+                               FIELD_IS_NONE_ERROR, INGREDIENT_NULL_ERROR,
+                               INGREDIENT_UNIQUE_ERROR, RECIPE_ALREADY_EXIST,
+                               TAG_NULL_ERROR, TAG_UNIQUE_ERROR)
+from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
+                            ShoppingCart, Tag)
+from recipes.validators import not_exists_validate, null_unique_validator
 from users.serializers import CustomUserSerializer
 
 

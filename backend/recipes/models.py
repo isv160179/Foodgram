@@ -1,28 +1,18 @@
 from django.contrib.auth import get_user_model
-from django.core.validators import RegexValidator, MinValueValidator
+from django.core.validators import MinValueValidator, RegexValidator
 from django.db import models
 from django.urls import reverse
 
-from recipes.constants import (
-    TAG_NAME_MAX_LENGTH,
-    TAG_COLOR_MAX_LENGTH,
-    ALLOWED_SYMBOLS_FOR_COLOR,
-    COLOR_SYMBOLS_ERROR,
-    TAG_SLUG_MAX_LENGTH,
-    TAG_TEMPLATE,
-    INGREDIENT_MAX_LENGTH,
-    MEASUREMENT_MAX_LENGTH,
-    INGREDIENT_TEMPLATE,
-    RECIPE_MAX_LENGTH,
-    COOKING_TIME_MIN,
-    COOKING_ERROR,
-    RECIPE_TEMPLATE,
-    INGREDIENT_MIN_VALUE,
-    INGREDIENT_ERROR,
-    INGREDIENT_IN_RECIPE_TEMPLATE,
-    FAVORITE_TEMPLATE,
-    SHOPING_CART_TEMPLATE
-)
+from recipes.constants import (ALLOWED_SYMBOLS_FOR_COLOR, COLOR_SYMBOLS_ERROR,
+                               COOKING_ERROR, COOKING_TIME_MIN,
+                               FAVORITE_TEMPLATE, INGREDIENT_ERROR,
+                               INGREDIENT_IN_RECIPE_TEMPLATE,
+                               INGREDIENT_MAX_LENGTH, INGREDIENT_MIN_VALUE,
+                               INGREDIENT_TEMPLATE, MEASUREMENT_MAX_LENGTH,
+                               RECIPE_MAX_LENGTH, RECIPE_TEMPLATE,
+                               SHOPING_CART_TEMPLATE, TAG_COLOR_MAX_LENGTH,
+                               TAG_NAME_MAX_LENGTH, TAG_SLUG_MAX_LENGTH,
+                               TAG_TEMPLATE)
 
 User = get_user_model()
 

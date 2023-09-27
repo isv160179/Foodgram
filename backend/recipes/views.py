@@ -1,23 +1,20 @@
 from django.db.models import Sum
 from django.http import HttpResponse
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import viewsets, status
+from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from foodgram.pagination import CustomPagination
-from recipes.constants import (
-    RECIPE_NOT_EXIST,
-    SHOPING_CART_TEMPLATE,
-    SHOPING_CART_FILE_NAME,
-    SHOPING_CART
-)
+from recipes.constants import (RECIPE_NOT_EXIST, SHOPING_CART,
+                               SHOPING_CART_FILE_NAME, SHOPING_CART_TEMPLATE)
 from recipes.filters import IngredientFilter, RecipeFilter
-from recipes.models import Tag, Ingredient, Recipe, RecipeIngredient
+from recipes.models import Ingredient, Recipe, RecipeIngredient, Tag
 from recipes.permissions import IsAdminOrAuthorOrReadOnly
-from recipes.serializers import TagSerializer, IngredientSerializer, \
-    RecipeWriteSerializer, FavoriteSerializer, ShoppingCartSerializer
+from recipes.serializers import (FavoriteSerializer, IngredientSerializer,
+                                 RecipeWriteSerializer, ShoppingCartSerializer,
+                                 TagSerializer)
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
