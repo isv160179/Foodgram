@@ -1,4 +1,4 @@
 name,color,slug
-Завтрак,#fff,breakfast
-Обед,#999,lunch
-Ужин,#000,dinner
+Завтрак,#ffff00,breakfast
+Обед,#ff0000,lunch
+Ужин,#008000,dinner
