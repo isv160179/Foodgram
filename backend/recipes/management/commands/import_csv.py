@@ -18,7 +18,6 @@ class Command(BaseCommand):
         patch_full = [
             {'file': 'ingredients.csv', 'obj': Ingredient},
             {'file': 'tags.csv', 'obj': Tag},
-            {'file': 'users.csv', 'obj': User},
         ]
         for parameter in patch_full:
             patch = os.path.join(settings.BASE_DIR, 'data/', parameter['file'])
