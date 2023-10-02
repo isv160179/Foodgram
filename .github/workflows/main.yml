@@ -120,6 +120,7 @@ jobs:
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
           script: |
             cd foodgram
+            sudo rm .env
             touch .env
             echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env
             echo DEBUG=${{ secrets.DEBUG }} >> .env
@@ -139,9 +140,7 @@ jobs:
             sudo docker compose -f docker-compose.production.yml exec backend cp -r /app/collected_static/. /backend_static/
             sudo docker compose -f docker-compose.production.yml exec backend python manage.py migrate
             sudo docker compose -f docker-compose.production.yml exec backend python manage.py import_csv
-            sudo docker system prune -af
-            cd ..
-            sudo rm .env
+            sudo docker system prune -af 
 
   send_message:
     runs-on: ubuntu-latest
