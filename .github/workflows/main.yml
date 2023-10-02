@@ -137,7 +137,7 @@ jobs:
             echo SUPERUSER_EMAIL=${{ secrets.SUPERUSER_EMAIL }} >> .env
             echo SUPERUSER_PASSWORD=${{ secrets.SUPERUSER_PASSWORD }} >> .env
             echo SUPERUSER_FIRSTNAME=${{ secrets.SUPERUSER_FIRSTNAME }} >> .env
-            echo SUPERUSER_SECONDNAME=${{ secrets.SUPERUSER_SECONDNAME }} >> .env
+            echo SUPERUSER_LASTNAME=${{ secrets.SUPERUSER_LASTNAME }} >> .env
             cd infra
             sudo docker compose -f docker-compose.production.yml pull
             sudo docker compose -f docker-compose.production.yml down -v
