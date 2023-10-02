@@ -2,10 +2,13 @@ import csv
 import os
 
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 
 from recipes.constants import PULL_SUCCSESS
 from recipes.models import Ingredient, Tag
+
+User = get_user_model()
 
 
 class Command(BaseCommand):
@@ -15,6 +18,7 @@ class Command(BaseCommand):
         patch_full = [
             {'file': 'ingredients.csv', 'obj': Ingredient},
             {'file': 'tags.csv', 'obj': Tag},
+            {'file': 'users.csv', 'obj': User},
         ]
         for parameter in patch_full:
             patch = os.path.join(settings.BASE_DIR, 'data/', parameter['file'])
