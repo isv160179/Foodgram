@@ -12,10 +12,12 @@ class Command(BaseCommand):
         parser.add_argument('--email', help='E-mail администратора')
         parser.add_argument('--password', help='Пароль администратора')
         parser.add_argument('--first_name', help='Имя администратора')
-        parser.add_argument('--second_name', help='Фамилия администратора')
-        parser.add_argument('--no-input',
-                            help='Опция для чтения данных из файла окружения',
-                            action='store_true')
+        parser.add_argument('--last_name', help='Фамилия администратора')
+        parser.add_argument(
+            '--no-input',
+            help='Опция для чтения данных из файла окружения',
+            action='store_true'
+        )
 
     def handle(self, *args, **options):
         User = get_user_model()
@@ -25,12 +27,17 @@ class Command(BaseCommand):
             options['email'] = os.environ['SUPERUSER_EMAIL']
             options['password'] = os.environ['SUPERUSER_PASSWORD']
             options['first_name'] = os.environ['SUPERUSER_FIRSTNAME']
-            options['second_name'] = os.environ['SUPERUSER_SECONDNAME']
+            options['last_name'] = os.environ['SUPERUSER_LASTNAME']
 
-        if not User.objects.filter(username=options['username']).exists():
-            User.objects.create_superuser(username=options['username'],
-                                          email=options['email'],
-                                          password=options['password'],
-                                          first_name=options['first_name'],
-                                          second_name=options['second_name']
-                                          )
+        if not User.objects.filter(
+                username=options['username'],
+                email=options['email']
+        ).exists():
+            User.objects.create_superuser(
+                username=options['username'],
+                email=options['email'],
+                password=options['password'],
+                first_name=options['first_name'],
+                last_name=options['last_name'],
+                role=User.UserRole.ADMIN
+            )
