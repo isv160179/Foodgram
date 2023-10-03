@@ -1,8 +1,8 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-import users.constants as const
-from users.validators import username_validator
+import api.constants as const
+from api.validators import username_validator
 
 
 class User(AbstractUser):

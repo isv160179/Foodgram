@@ -4,7 +4,7 @@ from django.core.validators import (MaxValueValidator, MinValueValidator,
 from django.db import models
 from django.urls import reverse
 
-import recipes.constants as const
+import api.constants as const
 
 User = get_user_model()
 

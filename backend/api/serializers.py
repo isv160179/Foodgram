@@ -1,13 +1,64 @@
+from djoser.serializers import UserSerializer
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
+from rest_framework.fields import SerializerMethodField
 
-import recipes.constants as const
-from foodgram.serializers import RecipeSerializer
+import api.constants as const
+from api.utils import Base64ImageField
+from api.validators import not_exists_validate, null_unique_validator
 from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
                             ShoppingCart, Tag)
-from recipes.utils import Base64ImageField
-from recipes.validators import not_exists_validate, null_unique_validator
-from users.serializers import CustomUserSerializer
+
+
+class RecipeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Recipe
+        fields = ('id', 'name', 'image', 'cooking_time',)
+
+
+class CustomUserSerializer(UserSerializer):
+    is_subscribed = SerializerMethodField(read_only=True)
+
+    class Meta(UserSerializer.Meta):
+        fields = UserSerializer.Meta.fields + ('is_subscribed',)
+
+    def get_is_subscribed(self, obj):
+        user = self.context['request'].user
+        return (
+            user.is_authenticated
+            and obj.subscribing.filter(user=user).exists()
+        )
+
+
+class SubscribeSerializer(CustomUserSerializer):
+    recipes = SerializerMethodField(method_name='get_recipes')
+    recipes_count = SerializerMethodField(method_name='get_recipes_count')
+
+    class Meta(CustomUserSerializer.Meta):
+        fields = CustomUserSerializer.Meta.fields + (
+            'recipes',
+            'recipes_count',
+        )
+
+    def get_recipes(self, obj):
+        author_recipes = Recipe.objects.filter(author=obj)
+
+        if 'recipes_limit' in self.context.get('request').GET:
+            recipes_limit = self.context.get('request').GET['recipes_limit']
+            author_recipes = author_recipes[:int(recipes_limit)]
+
+        if author_recipes:
+            serializer = RecipeSerializer(
+                author_recipes,
+                context={'request': self.context.get('request')},
+                many=True
+            )
+            return serializer.data
+
+        return RecipeSerializer(many=True).data
+
+    def get_recipes_count(self, obj):
+        return obj.recipes.count()
 
 
 class TagSerializer(serializers.ModelSerializer):
@@ -84,9 +135,6 @@ class RecipeReadSerializer(serializers.ModelSerializer):
             user.is_authenticated
             and obj.favorite.filter(user=user).exists()
         )
-        # if user.is_anonymous:
-        #     return False
-        # return obj.favorite.filter(user=user).exists()
 
     def get_is_in_shopping_cart(self, obj):
         user = self.context.get('request').user
@@ -94,9 +142,6 @@ class RecipeReadSerializer(serializers.ModelSerializer):
             user.is_authenticated
             and obj.shopping_cart.filter(user=user).exists()
         )
-        # if user.is_anonymous:
-        #     return False
-        # return obj.shopping_cart.filter(user=user).exists()
 
 
 class RecipeWriteSerializer(serializers.ModelSerializer):

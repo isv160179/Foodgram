@@ -5,7 +5,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 
-from recipes.constants import PULL_SUCCSESS
+from api.constants import PULL_SUCCSESS
 from recipes.models import Ingredient, Tag
 
 User = get_user_model()

@@ -3,10 +3,8 @@
 from django.conf import settings
 import django.contrib.auth.models
 from django.db import migrations, models
-import django.db.models.deletion
-import django.db.models.expressions
 import django.utils.timezone
-import users.validators
+import api.validators
 
 
 class Migration(migrations.Migration):
@@ -29,7 +27,8 @@ class Migration(migrations.Migration):
                 ('is_active', models.BooleanField(default=True, help_text='Designates whether this user should be treated as active. Unselect this instead of deleting accounts.', verbose_name='active')),
                 ('date_joined', models.DateTimeField(default=django.utils.timezone.now, verbose_name='date joined')),
                 ('email', models.EmailField(max_length=254, unique=True, verbose_name='Адрес электронной почты')),
-                ('username', models.CharField(max_length=150, unique=True, validators=[users.validators.username_validator], verbose_name='Логин')),
+                ('username', models.CharField(max_length=150, unique=True, validators=[
+                    api.validators.username_validator], verbose_name='Логин')),
                 ('first_name', models.CharField(max_length=150, verbose_name='Имя')),
                 ('last_name', models.CharField(max_length=150, verbose_name='Фамилия')),
                 ('role', models.CharField(choices=[('Admin', 'Admin'), ('User', 'User')], default='User', max_length=5, verbose_name='Роль пользователя')),
