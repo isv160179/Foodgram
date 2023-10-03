@@ -6,7 +6,7 @@
 
 Главная страница:
 - https://isv-foodgram.ddns.net
-- http://158.160.69.96
+- https://158.160.69.96
 
 Страница администрации сайта:
 - https://isv-foodgram.ddns.net/admin/
