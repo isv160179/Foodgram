@@ -10,7 +10,7 @@
 
 Страница администрации сайта:
 - https://isv-foodgram.ddns.net/admin/
-- http://158.160.69.96/admin/
+- https://158.160.69.96/admin/
 
 ```
 email: isv_admin@yandex.ru
