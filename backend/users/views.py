@@ -129,16 +129,3 @@ class CustomTokenCreateView(TokenCreateView):
         return Response(
             data=super()._action(serializer).data,
             status=status.HTTP_201_CREATED)
-
-
-# class CustomTokenDestroyView(TokenDestroyView):
-#     """
-#     Кастомный вьюсет удаления токена.
-#     """
-#
-#     def post(self, request):
-#         super().post(request)
-#         return Response(
-#             {const.DESTROY_TOKEN_SUCCESS},
-#             status=status.HTTP_204_NO_CONTENT
-#         )

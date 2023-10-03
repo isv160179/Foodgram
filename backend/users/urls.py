@@ -15,10 +15,5 @@ urlpatterns = [
         CustomTokenCreateView.as_view(),
         name='login'
     ),
-    # path(
-    #     'auth/token/logout/',
-    #     CustomTokenDestroyView.as_view(),
-    #     name='logout'
-    # ),
     path('auth/', include('djoser.urls.authtoken')),
 ]
