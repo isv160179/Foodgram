@@ -135,8 +135,14 @@ class RecipeIngredient(models.Model):
         validators=(
             MinValueValidator(
                 const.INGREDIENT_MIN_VALUE,
-                message=const.INGREDIENT_ERROR.format(
+                message=const.INGREDIENT_ERROR_MIN.format(
                     const.INGREDIENT_MIN_VALUE
+                )
+            ),
+            MaxValueValidator(
+                const.INGREDIENT_MAX_VALUE,
+                message=const.INGREDIENT_ERROR_MAX.format(
+                    const.INGREDIENT_MAX_VALUE
                 )
             ),
         ),
