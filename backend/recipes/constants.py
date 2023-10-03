@@ -6,12 +6,14 @@ MEASUREMENT_MAX_LENGTH = 200
 RECIPE_MAX_LENGTH = 200
 INGREDIENT_MIN_VALUE = 1
 COOKING_TIME_MIN = 1
+COOKING_TIME_MAX = 7000
 
 ALLOWED_SYMBOLS_FOR_COLOR = r'^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$'
 
 COLOR_SYMBOLS_ERROR = 'Не верный формат кода цвета в шестнадцатеричном виде.'
 INGREDIENT_ERROR = 'Количество ингредиента не может быть меньше {}.'
-COOKING_ERROR = 'Время приготовления рецепта не может быть меньше {}.'
+COOKING_ERROR_MIN = 'Время приготовления рецепта не может быть меньше {}.'
+COOKING_ERROR_MAX = 'Время приготовления рецепта не может быть больше {}.'
 
 TAG_TEMPLATE = 'Тег {} соответствует цвету {}.'
 INGREDIENT_TEMPLATE = '{} - {}'

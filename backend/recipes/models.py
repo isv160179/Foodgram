@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
-from django.core.validators import MinValueValidator, RegexValidator
+from django.core.validators import (MaxValueValidator, MinValueValidator,
+                                    RegexValidator)
 from django.db import models
 from django.urls import reverse
 
@@ -99,7 +100,11 @@ class Recipe(models.Model):
         validators=(
             MinValueValidator(
                 const.COOKING_TIME_MIN,
-                message=const.COOKING_ERROR.format(const.COOKING_TIME_MIN),
+                message=const.COOKING_ERROR_MIN.format(const.COOKING_TIME_MIN),
+            ),
+            MaxValueValidator(
+                const.COOKING_TIME_MAX,
+                message=const.COOKING_ERROR_MAX.format(const.COOKING_TIME_MAX),
             ),
         )
     )

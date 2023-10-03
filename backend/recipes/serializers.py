@@ -127,7 +127,11 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
     def validate_cooking_time(self, value):
         if value < const.COOKING_TIME_MIN:
             raise ValidationError(
-                const.COOKING_ERROR.format(const.COOKING_TIME_MIN)
+                const.COOKING_ERROR_MIN.format(const.COOKING_TIME_MIN)
+            )
+        if value > const.COOKING_TIME_MAX:
+            raise ValidationError(
+                const.COOKING_ERROR_MAX.format(const.COOKING_TIME_MAX)
             )
         return value
 
