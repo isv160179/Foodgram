@@ -33,11 +33,11 @@ git clone git@github.com:isv160179/foodgram-project-react.git
 cd foodgram-project-react
 ```
 
-Cоздать и активировать виртуальное окружение, установить зависимости:
+Создать и активировать виртуальное окружение, установить зависимости:
 
 ```
 python3 -m venv venv 
-source venv/scripts/activate
+source venv/bin/activate
 python -m pip install --upgrade pip
 pip install -r backend/requirements.txt
 ```
