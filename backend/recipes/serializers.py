@@ -1,6 +1,3 @@
-import base64
-
-from django.core.files.base import ContentFile
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
@@ -8,21 +5,9 @@ import recipes.constants as const
 from foodgram.serializers import RecipeSerializer
 from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
                             ShoppingCart, Tag)
+from recipes.utils import Base64ImageField
 from recipes.validators import not_exists_validate, null_unique_validator
 from users.serializers import CustomUserSerializer
-
-
-class Base64ImageField(serializers.ImageField):
-    """
-    Кастомный сериалайзер для поля изображения в формате base64.
-    """
-
-    def to_internal_value(self, data):
-        if isinstance(data, str) and data.startswith('data:image'):
-            format, imgstr = data.split(';base64,')
-            ext = format.split('/')[-1]
-            data = ContentFile(base64.b64decode(imgstr), name='image.' + ext)
-        return super().to_internal_value(data)
 
 
 class TagSerializer(serializers.ModelSerializer):
