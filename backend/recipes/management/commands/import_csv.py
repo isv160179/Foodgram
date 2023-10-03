@@ -30,8 +30,6 @@ class Command(BaseCommand):
                             key: value for key, value in zip(header, row)
                         }
                         parameter['obj'].objects.create(**object_dict)
-                except ValueError as error:
-                    self.stdout.write('Ошибка :{}.'.format(error))
-                except TypeError as error:
+                except (ValueError, TypeError) as error:
                     self.stdout.write('Ошибка :{}.'.format(error))
             self.stdout.write(PULL_SUCCSESS.format(parameter['file']))
