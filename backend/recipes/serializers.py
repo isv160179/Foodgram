@@ -4,11 +4,8 @@ from django.core.files.base import ContentFile
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
+import recipes.constants as const
 from foodgram.serializers import RecipeSerializer
-from recipes.constants import (COOKING_ERROR, COOKING_TIME_MIN,
-                               FIELD_IS_NONE_ERROR, INGREDIENT_NULL_ERROR,
-                               INGREDIENT_UNIQUE_ERROR, RECIPE_ALREADY_EXIST,
-                               TAG_NULL_ERROR, TAG_UNIQUE_ERROR)
 from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
                             ShoppingCart, Tag)
 from recipes.validators import not_exists_validate, null_unique_validator
@@ -128,20 +125,22 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
         )
 
     def validate_cooking_time(self, value):
-        if value < COOKING_TIME_MIN:
-            raise ValidationError(COOKING_ERROR.format(COOKING_TIME_MIN))
+        if value < const.COOKING_TIME_MIN:
+            raise ValidationError(
+                const.COOKING_ERROR.format(const.COOKING_TIME_MIN)
+            )
         return value
 
     def validate_ingredients(self, value):
         ingredients = self.initial_data.get('ingredients')
         if not ingredients:
             raise serializers.ValidationError(
-                {'ingredients': FIELD_IS_NONE_ERROR}
+                {'ingredients': const.FIELD_IS_NONE_ERROR}
             )
         null_unique_validator(
             value=value,
-            message_dict={'null': INGREDIENT_NULL_ERROR,
-                          'unique': INGREDIENT_UNIQUE_ERROR},
+            message_dict={'null': const.INGREDIENT_NULL_ERROR,
+                          'unique': const.INGREDIENT_UNIQUE_ERROR},
             item_list=[_['ingredient'] for _ in [_ for _ in value]]
         )
         return value
@@ -149,14 +148,14 @@ class RecipeWriteSerializer(serializers.ModelSerializer):
     def validate_tags(self, value):
         null_unique_validator(
             value=value,
-            message_dict={'null': TAG_NULL_ERROR,
-                          'unique': TAG_UNIQUE_ERROR}
+            message_dict={'null': const.TAG_NULL_ERROR,
+                          'unique': const.TAG_UNIQUE_ERROR}
         )
         return value
 
     def validate_image(self, value):
         if value is None:
-            raise ValidationError(FIELD_IS_NONE_ERROR)
+            raise ValidationError(const.FIELD_IS_NONE_ERROR)
         return value
 
     def validate(self, data):
@@ -213,7 +212,7 @@ class FavoriteSerializer(serializers.ModelSerializer):
         user, recipe = data.get('user'), data.get('recipe')
         if self.Meta.model.objects.filter(user=user, recipe=recipe).exists():
             raise ValidationError(
-                {'errors': RECIPE_ALREADY_EXIST}
+                {'errors': const.RECIPE_ALREADY_EXIST}
             )
         return data
 

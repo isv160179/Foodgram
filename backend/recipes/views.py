@@ -6,9 +6,8 @@ from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
+import recipes.constants as const
 from foodgram.pagination import CustomPagination
-from recipes.constants import (RECIPE_NOT_EXIST, SHOPING_CART,
-                               SHOPING_CART_FILE_NAME, SHOPING_CART_TEMPLATE)
 from recipes.filters import IngredientFilter, RecipeFilter
 from recipes.models import Ingredient, Recipe, RecipeIngredient, Tag
 from recipes.permissions import IsAdminOrAuthorOrReadOnly
@@ -50,7 +49,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
             )
         except Recipe.DoesNotExist:
             obj = None
-            Response({'errors': RECIPE_NOT_EXIST},
+            Response({'errors': const.RECIPE_NOT_EXIST},
                      status=status.HTTP_400_BAD_REQUEST)
 
         if self.request.method == 'POST':
@@ -64,7 +63,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         if self.request.method == 'DELETE':
             if obj is None:
-                return Response({'errors': RECIPE_NOT_EXIST},
+                return Response({'errors': const.RECIPE_NOT_EXIST},
                                 status=status.HTTP_400_BAD_REQUEST)
             obj.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -96,8 +95,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
             .order_by('ingredient__name')
             .annotate(total_summ=Sum('amount'))
         )
-        result = SHOPING_CART_TEMPLATE.format(request.user) + '\n'
-        result += '\n'.join(SHOPING_CART.format(
+        result = const.SHOPING_CART_TEMPLATE.format(request.user) + '\n'
+        result += '\n'.join(const.SHOPING_CART.format(
             ingredient['ingredient__name'],
             ingredient['total_summ'],
             ingredient['ingredient__measurement_unit']
@@ -105,6 +104,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
         response = HttpResponse(result, content_type='text/plain')
         response['Content-Disposition'] = (
-            f'attachment; filename={SHOPING_CART_FILE_NAME}'
+            f'attachment; filename={const.SHOPING_CART_FILE_NAME}'
         )
         return response

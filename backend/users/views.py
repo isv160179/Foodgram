@@ -6,11 +6,8 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
+import users.constants as const
 from foodgram.pagination import CustomPagination
-from users.constants import (ALREADY_IS_SUBSCRIBE, DESTROY_TOKEN_SUCCESS,
-                             PASSWORD_CHANGE_SUCCESS, SUBSCRIBE_ERROR,
-                             SUBSCRIBE_NOT_EXIST, UNSUBSCRIBE_SUCCESS,
-                             USER_IS_BLOCKED)
 from users.models import Subscribe, User
 from users.serializers import SubscribeSerializer
 
@@ -40,7 +37,7 @@ class CustomUserViewSet(UserViewSet):
         """
         if request.user == author:
             return Response(
-                {'errors': SUBSCRIBE_ERROR},
+                {'errors': const.SUBSCRIBE_ERROR},
                 status=status.HTTP_400_BAD_REQUEST,
             )
         try:
@@ -50,7 +47,7 @@ class CustomUserViewSet(UserViewSet):
             )
         except IntegrityError:
             return Response(
-                {'errors': ALREADY_IS_SUBSCRIBE.format(author)},
+                {'errors': const.ALREADY_IS_SUBSCRIBE.format(author)},
                 status=status.HTTP_400_BAD_REQUEST,
             )
         serializer = self.get_subscribe_serializer(subscribe.author)
@@ -64,11 +61,11 @@ class CustomUserViewSet(UserViewSet):
             Subscribe.objects.get(user=request.user, author=author).delete()
         except Subscribe.DoesNotExist:
             return Response(
-                {'errors': SUBSCRIBE_NOT_EXIST.format(author)},
+                {'errors': const.SUBSCRIBE_NOT_EXIST.format(author)},
                 status=status.HTTP_400_BAD_REQUEST,
             )
         return Response(
-            {'detail': UNSUBSCRIBE_SUCCESS.format(author)},
+            {'detail': const.UNSUBSCRIBE_SUCCESS.format(author)},
             status=status.HTTP_204_NO_CONTENT
         )
 
@@ -113,7 +110,7 @@ class CustomUserViewSet(UserViewSet):
         """
         super().set_password(request, *args, **kwargs)
         return Response(
-            {PASSWORD_CHANGE_SUCCESS},
+            {const.PASSWORD_CHANGE_SUCCESS},
             status=status.HTTP_204_NO_CONTENT
         )
 
@@ -126,7 +123,7 @@ class CustomTokenCreateView(TokenCreateView):
     def _action(self, serializer):
         if serializer.user.is_blocked:
             return Response(
-                {'errors': USER_IS_BLOCKED},
+                {'errors': const.USER_IS_BLOCKED},
                 status=status.HTTP_400_BAD_REQUEST,
             )
         return Response(
@@ -142,6 +139,6 @@ class CustomTokenDestroyView(TokenDestroyView):
     def post(self, request):
         super().post(request)
         return Response(
-            {DESTROY_TOKEN_SUCCESS},
+            {const.DESTROY_TOKEN_SUCCESS},
             status=status.HTTP_204_NO_CONTENT
         )

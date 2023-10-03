@@ -53,6 +53,7 @@ class RecipeAdmin(admin.ModelAdmin):
     def get_html_image(self, obj):
         if obj.image:
             return mark_safe(f'<img src="{obj.image.url}" width=50>')
+        return '---'
 
     @admin.display(description='Количество рецептов в избранном')
     def count_in_favorites(self, obj):

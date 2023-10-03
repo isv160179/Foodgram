@@ -3,6 +3,8 @@ import os
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 
+User = get_user_model()
+
 
 class Command(BaseCommand):
     help = "Создание суперпользователя в безинтерактивном режиме."
@@ -20,8 +22,6 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, **options):
-        User = get_user_model()
-
         if options['no_input']:
             options['username'] = os.environ['SUPERUSER_USERNAME']
             options['email'] = os.environ['SUPERUSER_EMAIL']

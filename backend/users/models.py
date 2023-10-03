@@ -1,9 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-from users.constants import (EMAIL_MAX_LENGTH, FIRST_NAME_MAX_LENGTH,
-                             LAST_NAME_MAX_LENGTH, SUBSCRIBE_TEMPLATE,
-                             USER_TEMPLATE, USERNAME_MAX_LENGTH)
+import users.constants as const
 from users.validators import username_validator
 
 
@@ -14,22 +12,22 @@ class User(AbstractUser):
 
     email = models.EmailField(
         'Адрес электронной почты',
-        max_length=EMAIL_MAX_LENGTH,
+        max_length=const.EMAIL_MAX_LENGTH,
         unique=True
     )
     username = models.CharField(
         'Логин',
-        max_length=USERNAME_MAX_LENGTH,
+        max_length=const.USERNAME_MAX_LENGTH,
         unique=True,
         validators=(username_validator,)
     )
     first_name = models.CharField(
         'Имя',
-        max_length=FIRST_NAME_MAX_LENGTH
+        max_length=const.FIRST_NAME_MAX_LENGTH
     )
     last_name = models.CharField(
         'Фамилия',
-        max_length=LAST_NAME_MAX_LENGTH
+        max_length=const.LAST_NAME_MAX_LENGTH
     )
     role = models.CharField(
         'Роль пользователя',
@@ -53,7 +51,7 @@ class User(AbstractUser):
         verbose_name_plural = 'Пользователи'
 
     def __str__(self):
-        return USER_TEMPLATE.format(
+        return const.USER_TEMPLATE.format(
             self.first_name,
             self.last_name
         )
@@ -88,4 +86,4 @@ class Subscribe(models.Model):
         )
 
     def __str__(self):
-        return SUBSCRIBE_TEMPLATE.format(self.user, self.author)
+        return const.SUBSCRIBE_TEMPLATE.format(self.user, self.author)

@@ -3,16 +3,7 @@ from django.core.validators import MinValueValidator, RegexValidator
 from django.db import models
 from django.urls import reverse
 
-from recipes.constants import (ALLOWED_SYMBOLS_FOR_COLOR, COLOR_SYMBOLS_ERROR,
-                               COOKING_ERROR, COOKING_TIME_MIN,
-                               FAVORITE_TEMPLATE, INGREDIENT_ERROR,
-                               INGREDIENT_IN_RECIPE_TEMPLATE,
-                               INGREDIENT_MAX_LENGTH, INGREDIENT_MIN_VALUE,
-                               INGREDIENT_TEMPLATE, MEASUREMENT_MAX_LENGTH,
-                               RECIPE_MAX_LENGTH, RECIPE_TEMPLATE,
-                               SHOPING_CART_TEMPLATE, TAG_COLOR_MAX_LENGTH,
-                               TAG_NAME_MAX_LENGTH, TAG_SLUG_MAX_LENGTH,
-                               TAG_TEMPLATE)
+import recipes.constants as const
 
 User = get_user_model()
 
@@ -20,21 +11,21 @@ User = get_user_model()
 class Tag(models.Model):
     name = models.CharField(
         'Название',
-        max_length=TAG_NAME_MAX_LENGTH,
+        max_length=const.TAG_NAME_MAX_LENGTH,
     )
     color = models.CharField(
         'Цвет в HEX',
-        max_length=TAG_COLOR_MAX_LENGTH,
+        max_length=const.TAG_COLOR_MAX_LENGTH,
         validators=(
             RegexValidator(
-                regex=ALLOWED_SYMBOLS_FOR_COLOR,
-                message=COLOR_SYMBOLS_ERROR,
+                regex=const.ALLOWED_SYMBOLS_FOR_COLOR,
+                message=const.COLOR_SYMBOLS_ERROR,
             ),
         ),
     )
     slug = models.SlugField(
         'Уникальный слаг',
-        max_length=TAG_SLUG_MAX_LENGTH,
+        max_length=const.TAG_SLUG_MAX_LENGTH,
         unique=True,
     )
 
@@ -43,7 +34,7 @@ class Tag(models.Model):
         verbose_name_plural = 'Теги'
 
     def __str__(self):
-        return TAG_TEMPLATE.format(
+        return const.TAG_TEMPLATE.format(
             self.name,
             self.color
         )
@@ -55,12 +46,12 @@ class Tag(models.Model):
 class Ingredient(models.Model):
     name = models.CharField(
         'Наименование ингредиента',
-        max_length=INGREDIENT_MAX_LENGTH,
+        max_length=const.INGREDIENT_MAX_LENGTH,
     )
 
     measurement_unit = models.CharField(
         'Единица измерения',
-        max_length=MEASUREMENT_MAX_LENGTH,
+        max_length=const.MEASUREMENT_MAX_LENGTH,
     )
 
     class Meta:
@@ -68,7 +59,7 @@ class Ingredient(models.Model):
         verbose_name_plural = 'Ингредиенты'
 
     def __str__(self):
-        return INGREDIENT_TEMPLATE.format(
+        return const.INGREDIENT_TEMPLATE.format(
             self.name,
             self.measurement_unit,
         )
@@ -100,15 +91,15 @@ class Recipe(models.Model):
     )
     name = models.CharField(
         'Наименование рецепта',
-        max_length=RECIPE_MAX_LENGTH,
+        max_length=const.RECIPE_MAX_LENGTH,
     )
     text = models.TextField('Описание рецепта')
     cooking_time = models.PositiveSmallIntegerField(
         'Время приготовления',
         validators=(
             MinValueValidator(
-                COOKING_TIME_MIN,
-                message=COOKING_ERROR.format(COOKING_TIME_MIN),
+                const.COOKING_TIME_MIN,
+                message=const.COOKING_ERROR.format(const.COOKING_TIME_MIN),
             ),
         )
     )
@@ -119,7 +110,7 @@ class Recipe(models.Model):
         ordering = ('-pk',)
 
     def __str__(self):
-        return RECIPE_TEMPLATE.format(self.name)
+        return const.RECIPE_TEMPLATE.format(self.name)
 
 
 class RecipeIngredient(models.Model):
@@ -138,8 +129,10 @@ class RecipeIngredient(models.Model):
         'Количество',
         validators=(
             MinValueValidator(
-                INGREDIENT_MIN_VALUE,
-                message=INGREDIENT_ERROR.format(INGREDIENT_MIN_VALUE)
+                const.INGREDIENT_MIN_VALUE,
+                message=const.INGREDIENT_ERROR.format(
+                    const.INGREDIENT_MIN_VALUE
+                )
             ),
         ),
     )
@@ -155,7 +148,7 @@ class RecipeIngredient(models.Model):
         )
 
     def __str__(self):
-        return INGREDIENT_IN_RECIPE_TEMPLATE.format(
+        return const.INGREDIENT_IN_RECIPE_TEMPLATE.format(
             self.ingredient.name,
             self.amount,
             self.ingredient.measurement_unit
@@ -187,7 +180,7 @@ class Favorite(models.Model):
         )
 
     def __str__(self):
-        return FAVORITE_TEMPLATE.format(
+        return const.FAVORITE_TEMPLATE.format(
             self.recipe,
             self.user,
         )
@@ -218,4 +211,4 @@ class ShoppingCart(models.Model):
         )
 
     def __str__(self):
-        return SHOPING_CART_TEMPLATE.format(self.user)
+        return const.SHOPING_CART_TEMPLATE.format(self.user)
