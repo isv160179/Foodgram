@@ -1,6 +1,6 @@
 from django.db import IntegrityError
 from django.shortcuts import get_object_or_404
-from djoser.views import TokenCreateView, TokenDestroyView, UserViewSet
+from djoser.views import TokenCreateView, UserViewSet
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -131,14 +131,14 @@ class CustomTokenCreateView(TokenCreateView):
             status=status.HTTP_201_CREATED)
 
 
-class CustomTokenDestroyView(TokenDestroyView):
-    """
-    Кастомный вьюсет удаления токена.
-    """
-
-    def post(self, request):
-        super().post(request)
-        return Response(
-            {const.DESTROY_TOKEN_SUCCESS},
-            status=status.HTTP_204_NO_CONTENT
-        )
+# class CustomTokenDestroyView(TokenDestroyView):
+#     """
+#     Кастомный вьюсет удаления токена.
+#     """
+#
+#     def post(self, request):
+#         super().post(request)
+#         return Response(
+#             {const.DESTROY_TOKEN_SUCCESS},
+#             status=status.HTTP_204_NO_CONTENT
+#         )
