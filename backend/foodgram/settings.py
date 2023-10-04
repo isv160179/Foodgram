@@ -133,4 +133,4 @@ DJOSER = {
         'token_destroy': ['rest_framework.permissions.IsAuthenticated'],
     },
 }
-PAGE_SIZE_DEFAULT = 10
+PAGE_SIZE_DEFAULT = 6
